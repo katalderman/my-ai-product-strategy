@@ -2,28 +2,30 @@
 
 ## Cost Model
 
+Inputs from the Margin Calculator: 1,000 AI requests per user per month, $0.018 blended cost per request before routing, $45 revenue per user per month.
+
 | Cost Category | Per-User/Month | Notes |
 |--------------|----------------|-------|
-| Inference (primary model) | | |
-| Inference (cascading/triage) | | |
-| Infrastructure | | |
-| Data/storage | | |
-| Human-in-the-loop | | |
-| **Total AI COGS** | | |
+| Inference (primary model) | $3.60 | 20% of requests on frontier models (agent runs, context-heavy generation) at $0.018/request |
+| Inference (cascading/triage) | $1.44 | 80% of requests on cheap models (filler suggestions, classification, embeddings) at ~$0.0018/request |
+| Infrastructure | $5.00 | We host customer production sites: CDN, builds, deploy pipeline |
+| Data/storage | $2.00 | Design files, per-workspace context graph, embedding store (embeddings get called more than you think) |
+| Human-in-the-loop | $1.00 | Eval review and agent-run QA sampling |
+| **Total AI COGS** | **$5.04** | At 80/20 routing. Uncascaded it is $18.00. Total COGS including non-AI rows: $13.04, which is a 71.0% gross margin at $45/user |
 
 ## Cascading Strategy
 <!-- Cheap model → frontier model routing logic -->
 
-**Triage model:**
-**Frontier model:**
-**Routing rule:**
-**Expected cascade ratio:**
+**Triage model:** Small/cheap tier (Haiku or GPT-mini class) behind the existing multi-model router.
+**Frontier model:** Opus or GPT-5 class, reserved for agent runs and context-heavy generation.
+**Routing rule:** Filler always runs cheap (naming, design lint, schema suggestions, alt text). Context-graph generation starts cheap and escalates to frontier only when the eval harness scores the task above a complexity threshold or the user retries. Agent runs plan on frontier and execute sub-steps on cheap models. Embeddings are pinned to the cheapest embedding model and cached.
+**Expected cascade ratio:** 80% cheap / 20% frontier
 
 ## Pricing Model
 
-**Current pricing:**
-**Proposed AI pricing:**
-**Model:** seat-based / usage-based / outcome-based / hybrid
+**Current pricing:** $45/seat/month flat (launch hypothesis: positioned against Figma's org tier, justified by bundling canvas plus CMS plus hosting)
+**Proposed AI pricing:** Strategy posture: Penetrate (win share against Figma pre-adoption, optimize costs relentlessly). Structure: $45/seat base plus $1.50 per production agent run (a page or flow generated and shipped to production) beyond 10 included per seat per month. Implied revenue per user: $52.50/month at an estimated 5 billable runs per user blended across the base.
+**Model:** hybrid (seat base + metered agent runs)
 
 ## Packaging Decision: Leader / Filler / Killer
 
@@ -43,13 +45,13 @@
 
 | Scenario | Impact on Margin | Response |
 |----------|-----------------|----------|
-| Inference costs 3x | | |
-| Heaviest segment doubles | | |
-| Model provider raises prices 50% | | |
+| Inference costs 3x | 42.2% drops to -37.8% with no routing; stays at 48.6% at an 80% cascade | Cascading is the shock absorber, not pricing. Raise the cascade ratio, lean on caching and prompt optimization, flip router weights to the next-best model per the kill switch audit |
+| Heaviest segment doubles | 2.2% uncascaded; 59.8% at an 80% cascade | Metered agent credits mean heavy users fund their own usage; the bundle only carries filler, which costs pennies |
+| Model provider raises prices 50% | ~22% uncascaded; ~65% at an 80% cascade (derived from calculator inputs) | Multi-model router shifts traffic to the next-best model inside 48 hours; the eval harness quantifies the quality delta before the flip |
 
 ## Board One-Pager
 <!-- Before/After: Old SaaS revenue vs. AI usage revenue for your product -->
 
-**Before (traditional SaaS):**
-**After (AI-enabled):**
-**Net margin shift:**
+**Before (traditional SaaS):** $45/seat, $8.00 COGS, 82.2% gross margin, $37.00 gross profit per user. Classic canvas economics, but nothing Figma can't match, and no AI differentiation.
+**After (AI-enabled):** $52.50 blended revenue per user (hybrid: seat plus metered agent runs), $13.04 total COGS at 80/20 routing, 75.2% gross margin, $39.46 gross profit per user.
+**Net margin shift:** Minus 7 points of margin percentage, plus $2.46 gross profit per user, and revenue now scales with work delivered: the heaviest 20-25% of users pay for their agent runs instead of being subsidized by everyone else. Under a 3x cost shock we stay profitable (48.6%) because routing absorbs the spike. Lower margin percentage, higher gross profit, survivable stress tests: that is the trade we are asking the board to approve.
