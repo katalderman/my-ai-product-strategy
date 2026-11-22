@@ -73,6 +73,6 @@ Moonshots. High uncertainty, high potential.
 
 Your 3-sentence AI strategy from Module 1 vs. what you'd say now:
 
-**M1 baseline:** [Paste your original Module 1 answer here, unedited. The gap is the point.]
+**M1 baseline:** Shipframe is an AI design copilot product intended for a product designer at a small SaaS team who also owns the marketing site, working without a dedicated front-end developer. The AI generates production-ready page layouts from the team's real CMS content model and existing component library, not from a blank canvas.
 
 **Now:** We're betting on Shipframe: AI design-to-production for small SaaS teams without front-end developers, because generation went commodity while the design-to-CMS-to-deploy graph did not. The moat is each workspace's context graph plus a correction loop scoped to it (7/20 today; H1 makes it real), priced as a $45 seat plus metered agent runs at 71% gross margin behind a multi-model kill switch. It ships with a reliability contract (92% golden accuracy, auto-rollback on fabricated bindings), tiered-confidence UX, and governance we can show in procurement. Live in the repo.
