@@ -9,7 +9,7 @@
 | Cross-Domain Transfer | The per-workspace design-to-CMS-to-deploy context graph | Design edits improve schema mapping and deploy config quality for the same customer | Y | broken |
 | Network Intelligence | Cross-customer patterns (anonymized component/schema mappings) | Better default mappings and templates for every new workspace | N | missing |
 
-**Broken loop identified by partner:** Recursive Learning: correction capture is designed (M2 fix plan, M4 HITL architecture) but nothing is instrumented or shipping, corrections today would go nowhere. Partner finding pending peer challenge.
+**Broken loop identified by partner:** Recursive Learning: correction capture is designed (M2 fix plan, M4 HITL architecture) but nothing is instrumented or shipping, corrections today would go nowhere. Confirmed by partner in the peer challenge: accept/edit/reject events are not captured anywhere today (named flow: proposal corrections to the correction store), so every correction a user makes is thrown away (concrete failure), and a three-month freeze would cost us nothing, which is the definition of a broken flywheel (measurable consequence).
 **Fix plan:** Ship the correction store before first customer: accept/edit/reject events write to it from day one, weekly job promotes repetitive corrections into the golden set and per-workspace prompt context. Owner: Kat. Already specced in 04-the-contract HITL section; this makes it a launch blocker, not a backlog item.
 
 ## Context Connectivity
